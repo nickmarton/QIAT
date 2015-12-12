@@ -112,11 +112,20 @@ public abstract class FileGrabber {
 
         for (File file : listOfFiles) {
             if (file.isFile()) {
-                filenames.add(file.getName());
+                filenames.add(file.getAbsoluteFile().toString());
             }
         }
 
         return filenames;
+    }
+
+    public String getExtension(String filePath){
+        String extension = "";
+        int i = filePath.lastIndexOf('.');
+        if (i > 0) {
+            extension = filePath.substring(i+1);
+        }
+        return extension;
     }
 
     /**

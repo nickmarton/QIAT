@@ -5,6 +5,7 @@
 package fileHandler;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -33,7 +34,7 @@ public class ImageFileGrabber extends FileGrabber {
     }
 
     /**
-     * Try to read ImageFileTypes.txt and set default extenstions.
+     * Try to read ImageFileTypes.txt and set default extensions.
      *
      * @return defaultExtensions The set of default Image file types supported.
      */
@@ -51,7 +52,7 @@ public class ImageFileGrabber extends FileGrabber {
         }
         catch (IOException e) {
             //resorting to basic types
-            String[] defaultTypes = {".jpg", ".jpeg", ".png", ".webp", ".bpg", ".tif"};
+            String[] defaultTypes = {".jpg", ".jpeg", ".png", ".tif"};
             for (String type : defaultTypes) {
                     defaultExtensions.add(type);
             }
@@ -62,12 +63,10 @@ public class ImageFileGrabber extends FileGrabber {
 
     public static void main(String[] args) {
         HashSet<String> a = new HashSet<>();
-        a.add(".iml");
-        a.add("iml");
 
         ImageFileGrabber ifg;
-        ifg = new ImageFileGrabber("./", a);
-        System.out.println(ifg.getFileNames());
-
+        ifg = new ImageFileGrabber("TestImages");
+        ArrayList<String> files = ifg.getFileNames();
+        System.out.println(files.get(0));
     }
 }
