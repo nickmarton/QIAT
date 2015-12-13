@@ -43,6 +43,11 @@ public class Display extends JFrame{
     private JScrollPane statPanel;
 
     /**
+     * The JPanel of the frame for adding labels.
+     */
+    private JScrollPane adderPanel;
+
+    /**
      * Construct the GUI.
      */
     public Display() {
@@ -106,6 +111,15 @@ public class Display extends JFrame{
         return scrollPane;
     }
 
+    private JScrollPane makeAdderPanel() {
+        AdderPanel adderPanel = new AdderPanel();
+        JScrollPane scrollPane = new JScrollPane(
+                                    adderPanel,
+                                    ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        return scrollPane;
+    }
+
     /**
      * Initialize the GUI.
      */
@@ -120,10 +134,12 @@ public class Display extends JFrame{
         keyBindingPanel = makeKeyBindingPanel();
         imagePanel = makeImagePanel();
         statPanel = makeStatPanel();
+        adderPanel = makeAdderPanel();
 
         add(keyBindingPanel, BorderLayout.WEST);
         add(imagePanel, BorderLayout.CENTER);
         add(statPanel, BorderLayout.SOUTH);
+        add(adderPanel, BorderLayout.NORTH);
 
         setSize(this.frameDimension);
         setTitle("Quick Annotation Tool");

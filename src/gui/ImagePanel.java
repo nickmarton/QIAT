@@ -49,7 +49,7 @@ public class ImagePanel extends JPanel{
     /**
      * The current file index for the FileGrabber.
      */
-    private int fileIndex = 2;
+    private int fileIndex = 7;
 
     /**
      * Create an ImagePanel object.
