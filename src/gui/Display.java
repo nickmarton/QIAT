@@ -9,9 +9,8 @@ import javax.swing.*;
 public class Display extends JFrame{
 
     private Dimension frameDimension = new Dimension(1300,850);
-    private Dimension imagePanelDimension = percentsToDimension(.65, .65);
-    private Dimension westPanelDimension = percentsToDimension(.15, .10);
-    private Dimension southPanelDimension = percentsToDimension(.10, .15);
+    private Dimension imagePanelDimension = percentsToDimension(.75, .75);
+    private Dimension statPanelDimension = percentsToDimension(.25, .10);
 
     public Display() {
         initUI();
@@ -29,22 +28,20 @@ public class Display extends JFrame{
 
     private JPanel getImagePanel() {
         JPanel imagePanel = new ImagePanel(this.imagePanelDimension);
-        imagePanel.setBackground(new Color(216,228,232));
+        imagePanel.setBackground(new Color(216, 228, 232));
         return imagePanel;
     }
 
-    private JPanel getWestPanel() {
-        JPanel westPanel = new JPanel();
-        westPanel.setBackground(Color.GRAY);
-        westPanel.setPreferredSize(this.westPanelDimension);
-        return westPanel;
+    private JScrollPane getKeyBindingPanel() {
+        JPanel keysPanel = new KeyBindingPanel();
+        JScrollPane scrollPane = new JScrollPane(keysPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        return scrollPane;
     }
 
-    private JPanel getSouthPanel() {
-        JPanel southPanel = new JPanel();
-        southPanel.setBackground(Color.BLUE);
-        southPanel.setPreferredSize(this.southPanelDimension);
-        return southPanel;
+    private JScrollPane getStatPanel() {
+        JPanel statPanel = new StatPanel(this.statPanelDimension);
+        JScrollPane scrollPane = new JScrollPane(statPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        return scrollPane;
     }
 
     public final void initUI() {
@@ -55,17 +52,16 @@ public class Display extends JFrame{
         menubar.add(file);
         setJMenuBar(menubar);
 
-        JPanel westPanel = getWestPanel();
+        JScrollPane keyBindingPanel = getKeyBindingPanel();
         JPanel imagePanel = getImagePanel();
-        JPanel southPanel = getSouthPanel();
+        JScrollPane statPanel = getStatPanel();
 
-        add(westPanel, BorderLayout.WEST);
+        add(keyBindingPanel, BorderLayout.WEST);
         add(imagePanel, BorderLayout.CENTER);
-        add(southPanel, BorderLayout.SOUTH);
-
+        add(statPanel, BorderLayout.SOUTH);
 
         setSize(this.frameDimension);
-        setTitle("BorderLayout");
+        setTitle("Quick Annotation Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
     }

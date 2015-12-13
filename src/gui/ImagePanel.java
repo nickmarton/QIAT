@@ -16,7 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.border.Border;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageDecoder;
@@ -49,7 +50,7 @@ public class ImagePanel extends JPanel{
     /**
      * The current file index for the FileGrabber.
      */
-    private int fileIndex = 0;
+    private int fileIndex = 2;
 
     /**
      * Create an ImagePanel object.
