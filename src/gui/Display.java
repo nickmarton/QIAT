@@ -86,7 +86,7 @@ public class Display extends JFrame{
     /**
      * Construct a KeyBindingPanel for the frame.
      *
-     * @return A new KeyBindingPanel.
+     * @return A new KeyBindingPanel wrapped in a JScrollPane..
      */
     private JScrollPane makeKeyBindingPanel() {
         JPanel keysPanel = new KeyBindingPanel();
@@ -100,7 +100,7 @@ public class Display extends JFrame{
     /**
      * Construct a StatPanel for the frame.
      *
-     * @return A new StatPanel.
+     * @return A new StatPanel wrapped in a JScrollPane..
      */
     private JScrollPane makeStatPanel() {
         JPanel statPanel = new StatPanel(this.statPanelDimension);
@@ -111,6 +111,11 @@ public class Display extends JFrame{
         return scrollPane;
     }
 
+    /**
+     * Construct an AdderPanel for the frame.
+     *
+     * @return A new AdderPanel wrapped in a JScrollPane.
+     */
     private JScrollPane makeAdderPanel() {
         AdderPanel adderPanel = new AdderPanel();
         JScrollPane scrollPane = new JScrollPane(

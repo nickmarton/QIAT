@@ -22,6 +22,9 @@ import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageDecoder;
 import fileHandler.ImageFileGrabber;
 
+/**
+ * A class for displaying images within a JPanel.
+ */
 public class ImagePanel extends JPanel{
 
     /**
