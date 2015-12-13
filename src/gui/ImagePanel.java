@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageDecoder;
@@ -81,6 +80,24 @@ public class ImagePanel extends JPanel{
             }
         }
 
+    }
+
+    /**
+     * Set ImagePanel's current image to image.
+     *
+     * @param image The image to set ImagePanel's current image to.
+     */
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
+    /**
+     * Get copy of ImagePanel's image.
+     *
+     * @return Copy of ImagePanel's image.
+     */
+    public BufferedImage getImage() {
+        return image;
     }
 
     /**
