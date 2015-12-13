@@ -32,9 +32,16 @@ public class KeyBindingPanel extends JPanel{
     private int rowIndex = 0;
 
     /**
+     *
+     */
+    private ImagePanel imagePanel;
+
+    /**
      * Construct a KeyBindingPanel object.
      */
-    public KeyBindingPanel() {
+    public KeyBindingPanel(ImagePanel imagePanel) {
+
+        this.imagePanel = imagePanel;
 
         Border loweredbevel;
         loweredbevel = BorderFactory.createLoweredBevelBorder();
@@ -121,7 +128,8 @@ public class KeyBindingPanel extends JPanel{
         getActionMap().put(key, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                System.out.println(label);
+                String imagePath = imagePanel.getImagePath();
+                imagePanel.nextImage();
             }
         });
     }

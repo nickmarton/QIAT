@@ -87,9 +87,10 @@ public class Display extends JFrame{
      * Construct a KeyBindingPanel for the frame.
      *
      * @return A new KeyBindingPanel wrapped in a JScrollPane..
+     * @param imagePanel
      */
-    private JScrollPane makeKeyBindingPanel() {
-        keyBindingPanel = new KeyBindingPanel();
+    private JScrollPane makeKeyBindingPanel(ImagePanel imagePanel) {
+        keyBindingPanel = new KeyBindingPanel(imagePanel);
         JScrollPane scrollPane = new JScrollPane(
                                     keyBindingPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -136,15 +137,15 @@ public class Display extends JFrame{
         menubar.add(file);
         setJMenuBar(menubar);
 
-        JScrollPane keyBindingScroll = makeKeyBindingPanel();
         imagePanel = makeImagePanel();
-        JScrollPane statScroll = makeStatPanel();
+        JScrollPane keyBindingScroll = makeKeyBindingPanel(imagePanel);
         JScrollPane adderScroll = makeAdderPanel(keyBindingPanel);
+        JScrollPane statScroll = makeStatPanel();
 
-        add(keyBindingScroll, BorderLayout.WEST);
         add(imagePanel, BorderLayout.CENTER);
-        add(statScroll, BorderLayout.SOUTH);
+        add(keyBindingScroll, BorderLayout.WEST);
         add(adderScroll, BorderLayout.NORTH);
+        add(statScroll, BorderLayout.SOUTH);
 
         setSize(this.frameDimension);
         setTitle("Quick Annotation Tool");

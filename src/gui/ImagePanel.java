@@ -33,6 +33,11 @@ public class ImagePanel extends JPanel{
     private BufferedImage image;
 
     /**
+     * The path of the image currently being displayed in the panel.
+     */
+    private String imagePath;
+
+    /**
      * The total dimension available to the panel.
      */
     private Dimension dimension;
@@ -52,7 +57,7 @@ public class ImagePanel extends JPanel{
     /**
      * The current file index for the FileGrabber.
      */
-    private int fileIndex = 4;
+    private int fileIndex = 0;
 
     /**
      * Create an ImagePanel object.
@@ -72,6 +77,7 @@ public class ImagePanel extends JPanel{
         while (true) {
             try {
                 String filePath = filePaths.get(fileIndex);
+                imagePath = filePath;
                 image = readImage(filePath);
                 image = getScaledImage(image, height, width);
                 break;
@@ -86,15 +92,6 @@ public class ImagePanel extends JPanel{
     }
 
     /**
-     * Set ImagePanel's current image to image.
-     *
-     * @param image The image to set ImagePanel's current image to.
-     */
-    public void setImage(BufferedImage image) {
-        this.image = image;
-    }
-
-    /**
      * Get copy of ImagePanel's image.
      *
      * @return Copy of ImagePanel's image.
@@ -102,6 +99,8 @@ public class ImagePanel extends JPanel{
     public BufferedImage getImage() {
         return image;
     }
+
+    public String getImagePath() {return imagePath;}
 
     /**
      * Do Affine Transform with width width and height height on an image.
@@ -124,6 +123,32 @@ public class ImagePanel extends JPanel{
         return bilinearScaleOp.filter(
                 image,
                 new BufferedImage(width, height, image.getType()));
+    }
+
+    public void nextImage() {
+        int height = dimension.height;
+        int width = dimension.width;
+
+        ArrayList<String> filePaths = grabber.getFileNames();
+
+        fileIndex++;
+
+        //keep trying to read a file until a readable one is found initially.
+        while (true) {
+            try {
+                String filePath = filePaths.get(fileIndex);
+                imagePath = filePath;
+                image = readImage(filePath);
+                image = getScaledImage(image, height, width);
+                repaint();
+                break;
+            } catch (IOException ex) {
+                fileIndex++;
+            } catch (IndexOutOfBoundsException ex) {
+                System.out.println("No images found.");
+                throw ex;
+            }
+        }
     }
 
     /**
