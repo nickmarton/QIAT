@@ -30,7 +30,7 @@ public class Display extends JFrame{
     /**
      * The KeyBindingPanel of the frame.
      */
-    private JScrollPane keyBindingPanel;
+    private KeyBindingPanel keyBindingPanel;
 
     /**
      * The ImagePanel of the frame.
@@ -40,12 +40,12 @@ public class Display extends JFrame{
     /**
      * The StatPanel of the frame.
      */
-    private JScrollPane statPanel;
+    private StatPanel statPanel;
 
     /**
      * The JPanel of the frame for adding labels.
      */
-    private JScrollPane adderPanel;
+    private AdderPanel adderPanel;
 
     /**
      * Construct the GUI.
@@ -89,9 +89,9 @@ public class Display extends JFrame{
      * @return A new KeyBindingPanel wrapped in a JScrollPane..
      */
     private JScrollPane makeKeyBindingPanel() {
-        JPanel keysPanel = new KeyBindingPanel();
+        keyBindingPanel = new KeyBindingPanel();
         JScrollPane scrollPane = new JScrollPane(
-                                    keysPanel,
+                                    keyBindingPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         return scrollPane;
@@ -103,7 +103,7 @@ public class Display extends JFrame{
      * @return A new StatPanel wrapped in a JScrollPane..
      */
     private JScrollPane makeStatPanel() {
-        JPanel statPanel = new StatPanel(this.statPanelDimension);
+        statPanel = new StatPanel(this.statPanelDimension);
         JScrollPane scrollPane = new JScrollPane(
                                     statPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -116,8 +116,8 @@ public class Display extends JFrame{
      *
      * @return A new AdderPanel wrapped in a JScrollPane.
      */
-    private JScrollPane makeAdderPanel() {
-        AdderPanel adderPanel = new AdderPanel();
+    private JScrollPane makeAdderPanel(KeyBindingPanel keyBindingPanel) {
+        adderPanel = new AdderPanel(keyBindingPanel);
         JScrollPane scrollPane = new JScrollPane(
                                     adderPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -136,15 +136,15 @@ public class Display extends JFrame{
         menubar.add(file);
         setJMenuBar(menubar);
 
-        keyBindingPanel = makeKeyBindingPanel();
+        JScrollPane keyBindingScroll = makeKeyBindingPanel();
         imagePanel = makeImagePanel();
-        statPanel = makeStatPanel();
-        adderPanel = makeAdderPanel();
+        JScrollPane statScroll = makeStatPanel();
+        JScrollPane adderScroll = makeAdderPanel(keyBindingPanel);
 
-        add(keyBindingPanel, BorderLayout.WEST);
+        add(keyBindingScroll, BorderLayout.WEST);
         add(imagePanel, BorderLayout.CENTER);
-        add(statPanel, BorderLayout.SOUTH);
-        add(adderPanel, BorderLayout.NORTH);
+        add(statScroll, BorderLayout.SOUTH);
+        add(adderScroll, BorderLayout.NORTH);
 
         setSize(this.frameDimension);
         setTitle("Quick Annotation Tool");

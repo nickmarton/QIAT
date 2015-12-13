@@ -5,8 +5,6 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
@@ -25,9 +23,16 @@ public class AdderPanel extends JPanel {
     private JTextField labelField;
 
     /**
+     * The KeyBindingPanel object to which to add to.
+     */
+    private KeyBindingPanel keyBindingPanel;
+
+    /**
      * Class for adding key bindings to KeyBindingPanel.
      */
-    public AdderPanel() {
+    public AdderPanel(KeyBindingPanel keyBindingPanel) {
+
+        this.keyBindingPanel = keyBindingPanel;
 
         Border loweredbevel;
         loweredbevel = BorderFactory.createLoweredBevelBorder();
@@ -64,14 +69,14 @@ public class AdderPanel extends JPanel {
         constraints.weightx = 1;
         constraints.weighty = 1;
         constraints.fill = GridBagConstraints.BOTH;
-        add(labelLabel);
+        add(keyLabel);
 
         constraints.gridx = 2;
         constraints.gridy = 0;
         constraints.weightx = 1;
         constraints.weighty = 1;
         constraints.fill = GridBagConstraints.BOTH;
-        add(labelField);
+        add(keyField);
 
         add(Box.createRigidArea(new Dimension(250,0)));
 
@@ -80,14 +85,14 @@ public class AdderPanel extends JPanel {
         constraints.weightx = 1;
         constraints.weighty = 1;
         constraints.fill = GridBagConstraints.BOTH;
-        add(keyLabel);
+        add(labelLabel);
 
         constraints.gridx = 4;
         constraints.gridy = 0;
         constraints.weightx = 1;
         constraints.weighty = 1;
         constraints.fill = GridBagConstraints.BOTH;
-        add(keyField);
+        add(labelField);
 
     }
 
@@ -96,40 +101,22 @@ public class AdderPanel extends JPanel {
      */
     private void commitLabel() {
         if (!keyField.getText().equals("") && !labelField.getText().equals("")) {
-            System.out.println("woooo");
+
+            String key = keyField.getText();
+            String label = labelField.getText();
+
+            try {
+                JLabel newLabel = keyBindingPanel.labels.get(key);
+                newLabel.setText(label);
+                keyBindingPanel.labels.put(key, newLabel);
+                keyBindingPanel.addKeyBinding(key, label);
+
+            } catch (NullPointerException ex) {
+                JOptionPane.showMessageDialog(null, "Invalid key");
+            }
+
             keyField.setText("");
             labelField.setText("");
-        }
-
-        //gui.BoundKeyListener listener = new gui.BoundKeyListener(key);
-        //this.addKeyListener(listener);
-        //setFocusable(true);
-    }
-
-    /**
-     *
-     */
-    public class BoundKeyListener implements KeyListener {
-
-        private String key;
-
-        public BoundKeyListener(String key) {
-            this.key = key;
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-            System.out.println("keyPressed="+KeyEvent.getKeyText(e.getKeyCode()));
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            System.out.println("keyPressed="+KeyEvent.getKeyText(e.getKeyCode()));
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            System.out.println("keyReleased="+KeyEvent.getKeyText(e.getKeyCode()));
         }
     }
 }

@@ -7,6 +7,8 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 /**
@@ -14,7 +16,15 @@ import java.util.HashMap;
  */
 public class KeyBindingPanel extends JPanel{
 
+    /**
+     * A map of the keys to their respective JLabels.
+     */
     public HashMap<String, JLabel> labels = new HashMap<>();
+
+    /**
+     * A map of key strings to their respective KeyEvent constants
+     */
+    private HashMap<String, Integer> keyCodes = new HashMap<>();
 
     /**
      * Next available index of GridBagLayout.
@@ -63,6 +73,7 @@ public class KeyBindingPanel extends JPanel{
             addRow(label, constraints);
         }
 
+        initKeyCodes();
     }
 
     /**
@@ -97,5 +108,49 @@ public class KeyBindingPanel extends JPanel{
         constraints.fill = GridBagConstraints.BOTH;
         add(labelLabel, constraints);
         rowIndex++;
+    }
+
+    /**
+     * Register a new keybinding with given key.
+     *
+     * @param key   The key to register the binding to.
+     * @param label The label used for annotation when the key is pressed.
+     */
+    public void addKeyBinding(String key, String label) {
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyCodes.get(key), 0, false), key);
+        getActionMap().put(key, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.out.println(label);
+            }
+        });
+    }
+
+    /**
+     * Populate HashMap of keyCodes.
+     */
+    private void initKeyCodes() {
+        String [] alphanumLabels = {"1", "2", "3", "4", "5", "6", "7", "8",
+                                    "9", "0", "A", "B", "C", "D", "E", "F",
+                                    "G", "H", "I", "J", "K", "L", "M", "N",
+                                    "O", "P", "Q", "R", "S", "T", "U", "V",
+                                    "W", "X", "Y", "Z"};
+
+        int [] keyCodes =  {KeyEvent.VK_1, KeyEvent.VK_2, KeyEvent.VK_3,
+                            KeyEvent.VK_4, KeyEvent.VK_5, KeyEvent.VK_6,
+                            KeyEvent.VK_7, KeyEvent.VK_8, KeyEvent.VK_9,
+                            KeyEvent.VK_0, KeyEvent.VK_A, KeyEvent.VK_B,
+                            KeyEvent.VK_C, KeyEvent.VK_D, KeyEvent.VK_E,
+                            KeyEvent.VK_F, KeyEvent.VK_G, KeyEvent.VK_H,
+                            KeyEvent.VK_I, KeyEvent.VK_J, KeyEvent.VK_K,
+                            KeyEvent.VK_L, KeyEvent.VK_M, KeyEvent.VK_N,
+                            KeyEvent.VK_O, KeyEvent.VK_P, KeyEvent.VK_Q,
+                            KeyEvent.VK_R, KeyEvent.VK_S, KeyEvent.VK_T,
+                            KeyEvent.VK_U, KeyEvent.VK_V, KeyEvent.VK_W,
+                            KeyEvent.VK_X, KeyEvent.VK_Y, KeyEvent.VK_Z};
+
+        for (int i=0; i<36; i++) {
+            this.keyCodes.put(alphanumLabels[i], keyCodes[i]);
+        }
     }
 }
