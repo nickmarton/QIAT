@@ -4,6 +4,8 @@
 
 package gui;
 
+import annotationManager.KnowledgeManager;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -42,9 +44,14 @@ public class KeyBindingPanel extends JPanel{
     private boolean respondToKeyBindings = false;
 
     /**
+     * A KnowledgeManager object to learn the annotations from the bindings.
+     */
+    private KnowledgeManager knowledgeManager;
+
+    /**
      * Construct a KeyBindingPanel object.
      */
-    public KeyBindingPanel(ImagePanel imagePanel) {
+    public KeyBindingPanel(ImagePanel imagePanel, KnowledgeManager knowledgeManager) {
 
         this.imagePanel = imagePanel;
 
@@ -87,6 +94,8 @@ public class KeyBindingPanel extends JPanel{
 
         initKeyCodes();
         bindArrowKeys();
+
+        this.knowledgeManager = knowledgeManager;
     }
 
     /**
@@ -135,19 +144,30 @@ public class KeyBindingPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (respondToKeyBindings) {
+
                     String imagePath = imagePanel.getImagePath();
-                    imagePanel.nextImage();
+                    knowledgeManager.addAnnotation(imagePath, label);
+
+                    if (!knowledgeManager.isVariableLength()) {
+                        //System.out.println(knowledgeManager.getAnnotations().get(imagePath));
+                        imagePanel.nextImage();
+                    }
                 }
             }
         });
     }
 
+    /**
+     * Set boolean to know when to respond to KeyEvents.
+     *
+     * @param respond The boolean for whether or not to respond.
+     */
     public void setRespondToKeyBindings(boolean respond) {
         respondToKeyBindings = respond;
     }
 
     /**
-     *
+     * Bind the left and right arrow keys for previous and next rolls.
      */
     private void bindArrowKeys() {
 
@@ -155,7 +175,18 @@ public class KeyBindingPanel extends JPanel{
         getActionMap().put("LeftArrow", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                String imagePath = imagePanel.getImagePath();
+                knowledgeManager.dropAnnotations(imagePath);
                 imagePanel.prevImage();
+            }
+        });
+
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "RightArrow");
+        getActionMap().put("RightArrow", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                //System.out.println(knowledgeManager.getAnnotations().get(imagePanel.getImagePath()));
+                imagePanel.nextImage();
             }
         });
     }

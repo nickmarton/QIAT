@@ -4,6 +4,8 @@
 
 package gui;
 
+import annotationManager.KnowledgeManager;
+
 import java.awt.*;
 import javax.swing.*;
 
@@ -26,6 +28,11 @@ public class Display extends JFrame{
      * The preferred initial size of the StatPanel.
      */
     private Dimension statPanelDimension = percentsToDimension(.25, .10);
+
+    /**
+     * The KnowledgeManager to use for recording annotations.
+     */
+    private KnowledgeManager knowledgeManager;
 
     /**
      * The KeyBindingPanel of the frame.
@@ -52,6 +59,44 @@ public class Display extends JFrame{
      */
     public Display() {
         initUI();
+    }
+
+    /**
+     * Initialize the GUI.
+     */
+    public final void initUI() {
+
+        setJMenuBar(makeMenuBar());
+
+        knowledgeManager = new KnowledgeManager();
+
+        imagePanel = makeImagePanel();
+        JScrollPane keyBindingScroll = makeKeyBindingPanel(imagePanel, knowledgeManager);
+        JScrollPane adderScroll = makeAdderPanel(keyBindingPanel);
+        JScrollPane statScroll = makeStatPanel(knowledgeManager);
+
+        add(imagePanel, BorderLayout.CENTER);
+        add(keyBindingScroll, BorderLayout.WEST);
+        add(adderScroll, BorderLayout.NORTH);
+        add(statScroll, BorderLayout.SOUTH);
+
+        setSize(this.frameDimension);
+        setTitle("Quick Annotation Tool");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+    }
+
+    /**
+     * Construct the JMenuBar to use in display.
+     * @return JMenuBar.
+     */
+    private JMenuBar makeMenuBar() {
+        JMenuBar menubar = new JMenuBar();
+        JMenu file = new JMenu("File");
+
+        menubar.add(file);
+
+        return menubar;
     }
 
     /**
@@ -89,8 +134,8 @@ public class Display extends JFrame{
      * @return A new KeyBindingPanel wrapped in a JScrollPane..
      * @param imagePanel
      */
-    private JScrollPane makeKeyBindingPanel(ImagePanel imagePanel) {
-        keyBindingPanel = new KeyBindingPanel(imagePanel);
+    private JScrollPane makeKeyBindingPanel(ImagePanel imagePanel, KnowledgeManager knowledgeManager) {
+        keyBindingPanel = new KeyBindingPanel(imagePanel, knowledgeManager);
         JScrollPane scrollPane = new JScrollPane(
                                     keyBindingPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -103,8 +148,8 @@ public class Display extends JFrame{
      *
      * @return A new StatPanel wrapped in a JScrollPane..
      */
-    private JScrollPane makeStatPanel() {
-        statPanel = new StatPanel(this.statPanelDimension);
+    private JScrollPane makeStatPanel(KnowledgeManager knowledgeManager) {
+        statPanel = new StatPanel(this.statPanelDimension, knowledgeManager);
         JScrollPane scrollPane = new JScrollPane(
                                     statPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -124,33 +169,6 @@ public class Display extends JFrame{
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                                     ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         return scrollPane;
-    }
-
-    /**
-     * Initialize the GUI.
-     */
-    public final void initUI() {
-
-        JMenuBar menubar = new JMenuBar();
-        JMenu file = new JMenu("File");
-
-        menubar.add(file);
-        setJMenuBar(menubar);
-
-        imagePanel = makeImagePanel();
-        JScrollPane keyBindingScroll = makeKeyBindingPanel(imagePanel);
-        JScrollPane adderScroll = makeAdderPanel(keyBindingPanel);
-        JScrollPane statScroll = makeStatPanel();
-
-        add(imagePanel, BorderLayout.CENTER);
-        add(keyBindingScroll, BorderLayout.WEST);
-        add(adderScroll, BorderLayout.NORTH);
-        add(statScroll, BorderLayout.SOUTH);
-
-        setSize(this.frameDimension);
-        setTitle("Quick Annotation Tool");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
     }
 
     public static void main(String[] args) {

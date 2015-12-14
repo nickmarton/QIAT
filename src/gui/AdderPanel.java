@@ -10,6 +10,9 @@ import java.awt.event.FocusListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+/**
+ * A class for adding keybindings to the KeyBindingPanel.
+ */
 public class AdderPanel extends JPanel {
 
     /**
@@ -21,9 +24,6 @@ public class AdderPanel extends JPanel {
      * The label to bind to the key.
      */
     private JTextField labelField;
-
-    private boolean textFieldLock1 = true;
-    private boolean textFieldLock2 = true;
 
     /**
      * The KeyBindingPanel object to which to add to.
