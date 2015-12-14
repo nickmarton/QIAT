@@ -63,6 +63,13 @@ public class KnowledgeManager {
     }
 
     /**
+     * Clear all annotations.
+     */
+    public void clearAnnotations() {
+        annotations.clear();
+    }
+
+    /**
      * Determine if Knowledge Manager is currently taking 1D or ND annotations.
      *
      * @return variableLength.

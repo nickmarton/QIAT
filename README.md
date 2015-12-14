@@ -1,1 +1,1 @@
-# Quick Annotation Tool
+# Quick Image Annotation Tool

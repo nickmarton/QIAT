@@ -29,6 +29,11 @@ public class KeyBindingPanel extends JPanel{
     private HashMap<String, Integer> keyCodes = new HashMap<>();
 
     /**
+     * A map of currently registered bindings.
+     */
+    private HashMap<String, Boolean> registeredBindings = new HashMap<>();
+
+    /**
      * Next available index of GridBagLayout.
      */
     private int rowIndex = 0;
@@ -54,6 +59,15 @@ public class KeyBindingPanel extends JPanel{
     public KeyBindingPanel(ImagePanel imagePanel, KnowledgeManager knowledgeManager) {
 
         this.imagePanel = imagePanel;
+        this.knowledgeManager = knowledgeManager;
+
+        initPanel();
+    }
+
+    /**
+     * Add initial components to panel.
+     */
+    public void initPanel() {
 
         Border loweredbevel;
         loweredbevel = BorderFactory.createLoweredBevelBorder();
@@ -83,10 +97,10 @@ public class KeyBindingPanel extends JPanel{
         rowIndex++;
 
         String [] alphanumLabels = {"1", "2", "3", "4", "5", "6", "7", "8",
-                                    "9", "A", "B", "C", "D", "E", "F", "G",
-                                    "H", "I", "J", "K", "L", "M", "N", "O",
-                                    "P", "Q", "R", "S", "T", "U", "V", "W",
-                                    "X", "Y", "Z"};
+                "9", "A", "B", "C", "D", "E", "F", "G",
+                "H", "I", "J", "K", "L", "M", "N", "O",
+                "P", "Q", "R", "S", "T", "U", "V", "W",
+                "X", "Y", "Z"};
 
         for (String label : alphanumLabels) {
             addRow(label, constraints);
@@ -94,8 +108,6 @@ public class KeyBindingPanel extends JPanel{
 
         initKeyCodes();
         bindArrowKeys();
-
-        this.knowledgeManager = knowledgeManager;
     }
 
     /**
@@ -139,18 +151,26 @@ public class KeyBindingPanel extends JPanel{
      * @param label The label used for annotation when the key is pressed.
      */
     public void addKeyBinding(String key, String label) {
+
+        registeredBindings.put(key, true);
+
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyCodes.get(key), 0, false), key);
         getActionMap().put(key, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+
+                //if we're not focused on a JTextField
                 if (respondToKeyBindings) {
 
-                    String imagePath = imagePanel.getImagePath();
-                    knowledgeManager.addAnnotation(imagePath, label);
+                    //if the binding is currently registered, respond.
+                    if (registeredBindings.get(key) != null) {
+                        String imagePath = imagePanel.getImagePath();
+                        knowledgeManager.addAnnotation(imagePath, label);
 
-                    if (!knowledgeManager.isVariableLength()) {
-                        System.out.println(knowledgeManager.getAnnotations().get(imagePath));
-                        imagePanel.nextImage();
+                        if (!knowledgeManager.isVariableLength()) {
+                            System.out.println(knowledgeManager.getAnnotations().get(imagePath));
+                            imagePanel.nextImage();
+                        }
                     }
                 }
             }
@@ -164,6 +184,13 @@ public class KeyBindingPanel extends JPanel{
      */
     public void setRespondToKeyBindings(boolean respond) {
         respondToKeyBindings = respond;
+    }
+
+    /**
+     * Clear registeredBinding map.
+     */
+    public void clearRegisteredBindings() {
+        registeredBindings.clear();
     }
 
     /**

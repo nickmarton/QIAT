@@ -26,14 +26,29 @@ public class StatPanel extends JPanel {
     private KnowledgeManager knowledgeManager;
 
     /**
+     * The ImagePanel to use for IOException error logging.
+     */
+    private ImagePanel imagePanel;
+
+    /**
+     * The KeyBindingField to use for settings.
+     */
+    private KeyBindingPanel keyBindingPanel;
+
+    /**
      * Construct a StatPanel object.
      *
      * @param statPanelDimension    The space allotted to the Panel.
      */
-    public StatPanel(Dimension statPanelDimension, KnowledgeManager knowledgeManager) {
+    public StatPanel(Dimension statPanelDimension,
+                     KnowledgeManager knowledgeManager,
+                     ImagePanel imagePanel,
+                     KeyBindingPanel keyBindingPanel) {
 
-        this.knowledgeManager = knowledgeManager;
         dimension = statPanelDimension;
+        this.knowledgeManager = knowledgeManager;
+        this.imagePanel = imagePanel;
+        this.keyBindingPanel = keyBindingPanel;
 
         Border loweredbevel = BorderFactory.createLoweredBevelBorder();
         setBorder(loweredbevel);
@@ -142,6 +157,8 @@ public class StatPanel extends JPanel {
      */
     private void doSave() {
         System.out.println("DO SAVE");
+        System.out.println(knowledgeManager.getAnnotations());
+        System.out.println(imagePanel.getReadErrors());
     }
 
     /**
@@ -149,5 +166,11 @@ public class StatPanel extends JPanel {
      */
     private void doClear() {
         System.out.println("DO CLEAR");
+        knowledgeManager.clearAnnotations();
+        imagePanel.reset();
+        keyBindingPanel.removeAll();
+        keyBindingPanel.initPanel();
+        keyBindingPanel.clearRegisteredBindings();
+        keyBindingPanel.revalidate();
     }
 }

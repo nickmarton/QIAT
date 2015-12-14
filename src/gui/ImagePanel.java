@@ -11,10 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -31,6 +28,11 @@ public class ImagePanel extends JPanel{
      * The image currently being displayed in the panel.
      */
     private BufferedImage image;
+
+    /**
+     * Whether or not an IOException was encountered when reading images.
+     */
+    private HashMap<String, Boolean> readErrors = new HashMap<>();
 
     /**
      * The path of the image currently being displayed in the panel.
@@ -75,13 +77,17 @@ public class ImagePanel extends JPanel{
 
         //keep trying to read a file until a readable one is found initially.
         while (true) {
+
             try {
                 String filePath = filePaths.get(fileIndex);
                 imagePath = filePath;
                 image = readImage(filePath);
                 image = getScaledImage(image, height, width);
+                readErrors.put(filePath, false);
                 break;
             } catch (IOException ex) {
+                String filePath = filePaths.get(fileIndex);
+                readErrors.put(filePath, true);
                 fileIndex++;
             } catch (IndexOutOfBoundsException ex) {
                 System.out.println("No images found.");
@@ -101,34 +107,20 @@ public class ImagePanel extends JPanel{
     }
 
     /**
+     * Get copy of ImagePanel's read errors.
+     *
+     * @return Copy of ImagePanel's read errors.
+     */
+    public HashMap<String, Boolean> getReadErrors() {
+        return readErrors;
+    }
+
+    /**
      * Return the path of the current image.
      *
      * @return imagePath.
      */
     public String getImagePath() {return imagePath;}
-
-    /**
-     * Do Affine Transform with width width and height height on an image.
-     *
-     * @param image         The image to be scaled.
-     * @param width         The width to use in Affine Transform.
-     * @param height        The height to use in Affine Transform.
-     * @return              New scaled version of image.
-     * @throws IOException
-     */
-    public static BufferedImage getScaledImage(BufferedImage image, int width, int height) {
-        int imageWidth  = image.getWidth();
-        int imageHeight = image.getHeight();
-
-        double scaleX = (double)width/imageWidth;
-        double scaleY = (double)height/imageHeight;
-        AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
-        AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
-
-        return bilinearScaleOp.filter(
-                image,
-                new BufferedImage(width, height, image.getType()));
-    }
 
     /**
      * Move the ImagePanel object the next image.
@@ -143,14 +135,18 @@ public class ImagePanel extends JPanel{
 
         //keep trying to read a file until a readable one is found initially.
         while (true) {
+
             try {
                 String filePath = filePaths.get(fileIndex);
                 imagePath = filePath;
                 image = readImage(filePath);
                 image = getScaledImage(image, height, width);
                 repaint();
+                readErrors.put(filePath, false);
                 break;
             } catch (IOException ex) {
+                String filePath = filePaths.get(fileIndex);
+                readErrors.put(filePath, true);
                 fileIndex++;
             } catch (IndexOutOfBoundsException ex) {
                 JOptionPane.showMessageDialog(null, "No more images found.");
@@ -173,14 +169,22 @@ public class ImagePanel extends JPanel{
 
         //keep trying to read a file until a readable one is found initially.
         while (true) {
+
+
             try {
                 String filePath = filePaths.get(fileIndex);
                 imagePath = filePath;
                 image = readImage(filePath);
                 image = getScaledImage(image, height, width);
                 repaint();
+
+                String prevFilePath = filePaths.get(fileIndex + 1);
+                readErrors.remove(prevFilePath);
                 break;
             } catch (IOException ex) {
+                String prevFilePath = filePaths.get(fileIndex + 1);
+                readErrors.remove(prevFilePath);
+
                 fileIndex--;
             } catch (IndexOutOfBoundsException ex) {
                 JOptionPane.showMessageDialog(null, "At first image; cannot go backwards.");
@@ -188,6 +192,63 @@ public class ImagePanel extends JPanel{
                 break;
             }
         }
+    }
+
+    public void reset() {
+
+        //Drop errors first since we're starting over again.
+        readErrors.clear();
+
+        int height = dimension.height;
+        int width = dimension.width;
+
+        fileIndex = 0;
+        ArrayList<String> filePaths = grabber.getFileNames();
+
+        //keep trying to read a file until a readable one is found initially.
+        while (true) {
+
+            try {
+                String filePath = filePaths.get(fileIndex);
+                imagePath = filePath;
+                image = readImage(filePath);
+                image = getScaledImage(image, height, width);
+                repaint();
+                readErrors.put(filePath, false);
+                break;
+            } catch (IOException ex) {
+                String filePath = filePaths.get(fileIndex);
+                readErrors.put(filePath, true);
+                fileIndex++;
+            } catch (IndexOutOfBoundsException ex) {
+                JOptionPane.showMessageDialog(null, "No more images found.");
+                fileIndex--;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Do Affine Transform with width width and height height on an image.
+     *
+     * @param image         The image to be scaled.
+     * @param width         The width to use in Affine Transform.
+     * @param height        The height to use in Affine Transform.
+     * @return              New scaled version of image.
+     * @throws IOException
+     */
+    public static BufferedImage getScaledImage(BufferedImage image, int width, int height) {
+        int imageWidth  = image.getWidth();
+        int imageHeight = image.getHeight();
+
+        double scaleX = (double)width/imageWidth;
+        double scaleY = (double)height/imageHeight;
+        AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
+        AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+
+        return bilinearScaleOp.filter(
+                image,
+                new BufferedImage(width, height, image.getType()));
     }
 
     /**

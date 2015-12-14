@@ -73,7 +73,7 @@ public class Display extends JFrame{
         imagePanel = makeImagePanel();
         JScrollPane keyBindingScroll = makeKeyBindingPanel(imagePanel, knowledgeManager);
         JScrollPane adderScroll = makeAdderPanel(keyBindingPanel);
-        JScrollPane statScroll = makeStatPanel(knowledgeManager);
+        JScrollPane statScroll = makeStatPanel(knowledgeManager, imagePanel, keyBindingPanel);
 
         add(imagePanel, BorderLayout.CENTER);
         add(keyBindingScroll, BorderLayout.WEST);
@@ -148,8 +148,15 @@ public class Display extends JFrame{
      *
      * @return A new StatPanel wrapped in a JScrollPane..
      */
-    private JScrollPane makeStatPanel(KnowledgeManager knowledgeManager) {
-        statPanel = new StatPanel(this.statPanelDimension, knowledgeManager);
+    private JScrollPane makeStatPanel(KnowledgeManager knowledgeManager,
+                                      ImagePanel imagePanel,
+                                      KeyBindingPanel keyBindingPanel) {
+
+        statPanel = new StatPanel(this.statPanelDimension,
+                                    knowledgeManager,
+                                    imagePanel,
+                                    keyBindingPanel);
+
         JScrollPane scrollPane = new JScrollPane(
                                     statPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
