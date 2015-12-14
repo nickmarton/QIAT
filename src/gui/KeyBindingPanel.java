@@ -4,14 +4,14 @@
 
 package gui;
 
-import annotationManager.KnowledgeManager;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
+
+import annotationManager.AnnotationManager;
 
 /**
  * A class for the key bindings used during annotation.
@@ -51,15 +51,15 @@ public class KeyBindingPanel extends JPanel{
     /**
      * A KnowledgeManager object to learn the annotations from the bindings.
      */
-    private KnowledgeManager knowledgeManager;
+    private AnnotationManager annotationManager;
 
     /**
      * Construct a KeyBindingPanel object.
      */
-    public KeyBindingPanel(ImagePanel imagePanel, KnowledgeManager knowledgeManager) {
+    public KeyBindingPanel(ImagePanel imagePanel, AnnotationManager knowledgeManager) {
 
         this.imagePanel = imagePanel;
-        this.knowledgeManager = knowledgeManager;
+        this.annotationManager = knowledgeManager;
 
         initPanel();
     }
@@ -165,10 +165,10 @@ public class KeyBindingPanel extends JPanel{
                     //if the binding is currently registered, respond.
                     if (registeredBindings.get(key) != null) {
                         String imagePath = imagePanel.getImagePath();
-                        knowledgeManager.addAnnotation(imagePath, label);
+                        annotationManager.addAnnotation(imagePath, label);
 
-                        if (!knowledgeManager.isVariableLength()) {
-                            System.out.println(knowledgeManager.getAnnotations().get(imagePath));
+                        if (!annotationManager.isVariableLength()) {
+                            System.out.println(annotationManager.getAnnotations().get(imagePath));
                             imagePanel.nextImage();
                         }
                     }
@@ -203,7 +203,7 @@ public class KeyBindingPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent ae) {
                 String imagePath = imagePanel.getImagePath();
-                knowledgeManager.dropAnnotations(imagePath);
+                annotationManager.dropAnnotations(imagePath);
                 imagePanel.prevImage();
             }
         });
@@ -212,7 +212,7 @@ public class KeyBindingPanel extends JPanel{
         getActionMap().put("RightArrow", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                System.out.println(knowledgeManager.getAnnotations().get(imagePanel.getImagePath()));
+                System.out.println(annotationManager.getAnnotations().get(imagePanel.getImagePath()));
                 imagePanel.nextImage();
             }
         });

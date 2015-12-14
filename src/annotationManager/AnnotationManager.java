@@ -1,5 +1,5 @@
 /**
- * Created by nick on 12/13/15.
+ * Created by nick on 12/14/15.
  */
 
 package annotationManager;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 /**
  * A class for handling the annotation knowledge.
  */
-public class KnowledgeManager {
+public class AnnotationManager {
 
     /**
      * A HashMap for variable length annotations, i.e. a set of labels per image.
@@ -25,7 +25,7 @@ public class KnowledgeManager {
     /**
      * Default constructor; initialized to 1D.
      */
-    public KnowledgeManager() {
+    public AnnotationManager() {
         variableLength = false;
     }
 
@@ -34,7 +34,7 @@ public class KnowledgeManager {
      *
      * @param variableLength The flag for whether or not to use 1D or ND.
      */
-    public KnowledgeManager(boolean variableLength) {
+    public AnnotationManager(boolean variableLength) {
         this.variableLength = true;
     }
 

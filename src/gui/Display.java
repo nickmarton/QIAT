@@ -4,7 +4,7 @@
 
 package gui;
 
-import annotationManager.KnowledgeManager;
+import annotationManager.AnnotationManager;
 
 import java.awt.*;
 import javax.swing.*;
@@ -32,7 +32,7 @@ public class Display extends JFrame{
     /**
      * The KnowledgeManager to use for recording annotations.
      */
-    private KnowledgeManager knowledgeManager;
+    private AnnotationManager annotationManager;
 
     /**
      * The KeyBindingPanel of the frame.
@@ -68,12 +68,12 @@ public class Display extends JFrame{
 
         //setJMenuBar(makeMenuBar());
 
-        knowledgeManager = new KnowledgeManager();
+        annotationManager = new AnnotationManager();
 
         imagePanel = makeImagePanel();
-        JScrollPane keyBindingScroll = makeKeyBindingPanel(imagePanel, knowledgeManager);
+        JScrollPane keyBindingScroll = makeKeyBindingPanel(imagePanel, annotationManager);
         JScrollPane adderScroll = makeAdderPanel(keyBindingPanel);
-        JScrollPane statScroll = makeStatPanel(knowledgeManager, imagePanel, keyBindingPanel);
+        JScrollPane statScroll = makeStatPanel(annotationManager, imagePanel, keyBindingPanel);
 
         add(imagePanel, BorderLayout.CENTER);
         add(keyBindingScroll, BorderLayout.WEST);
@@ -134,8 +134,8 @@ public class Display extends JFrame{
      * @return A new KeyBindingPanel wrapped in a JScrollPane..
      * @param imagePanel
      */
-    private JScrollPane makeKeyBindingPanel(ImagePanel imagePanel, KnowledgeManager knowledgeManager) {
-        keyBindingPanel = new KeyBindingPanel(imagePanel, knowledgeManager);
+    private JScrollPane makeKeyBindingPanel(ImagePanel imagePanel, AnnotationManager annotationManager) {
+        keyBindingPanel = new KeyBindingPanel(imagePanel, annotationManager);
         JScrollPane scrollPane = new JScrollPane(
                                     keyBindingPanel,
                                     ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -148,12 +148,12 @@ public class Display extends JFrame{
      *
      * @return A new StatPanel wrapped in a JScrollPane..
      */
-    private JScrollPane makeStatPanel(KnowledgeManager knowledgeManager,
+    private JScrollPane makeStatPanel(AnnotationManager annotationManager,
                                       ImagePanel imagePanel,
                                       KeyBindingPanel keyBindingPanel) {
 
         statPanel = new StatPanel(this.statPanelDimension,
-                                    knowledgeManager,
+                                    annotationManager,
                                     imagePanel,
                                     keyBindingPanel);
 

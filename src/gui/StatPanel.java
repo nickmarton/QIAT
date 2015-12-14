@@ -7,8 +7,14 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import annotationManager.KnowledgeManager;
+import com.csvreader.CsvWriter;
+
+import annotationManager.AnnotationManager;
+
 
 /**
  * A class for displaying statistics for the ongoing annotation.
@@ -23,7 +29,7 @@ public class StatPanel extends JPanel {
     /**
      * The KnowledgeManager to use for annotation settings adjustments.
      */
-    private KnowledgeManager knowledgeManager;
+    private AnnotationManager annotationManager;
 
     /**
      * The ImagePanel to use for IOException error logging.
@@ -41,12 +47,12 @@ public class StatPanel extends JPanel {
      * @param statPanelDimension    The space allotted to the Panel.
      */
     public StatPanel(Dimension statPanelDimension,
-                     KnowledgeManager knowledgeManager,
+                     AnnotationManager knowledgeManager,
                      ImagePanel imagePanel,
                      KeyBindingPanel keyBindingPanel) {
 
         dimension = statPanelDimension;
-        this.knowledgeManager = knowledgeManager;
+        this.annotationManager = knowledgeManager;
         this.imagePanel = imagePanel;
         this.keyBindingPanel = keyBindingPanel;
 
@@ -75,10 +81,10 @@ public class StatPanel extends JPanel {
         constraints.fill = GridBagConstraints.BOTH;
         JCheckBox labelCheckBox = new JCheckBox("Multi-label");
         labelCheckBox.addActionListener(e -> {
-            if (knowledgeManager.isVariableLength()) {
-                knowledgeManager.setVariableLength(false);
+            if (annotationManager.isVariableLength()) {
+                annotationManager.setVariableLength(false);
             } else {
-                knowledgeManager.setVariableLength(true);
+                annotationManager.setVariableLength(true);
             }
         });
         add(labelCheckBox, constraints);
@@ -156,17 +162,43 @@ public class StatPanel extends JPanel {
      * Perform saving action.
      */
     private void doSave() {
-        System.out.println("DO SAVE");
-        System.out.println(knowledgeManager.getAnnotations());
+
+        System.out.println(annotationManager.getAnnotations());
         System.out.println(imagePanel.getReadErrors());
+
+        String outputFile = "Annotations.csv";
+
+        // before we open the file check to see if it already exists
+        boolean alreadyExists = new File(outputFile).exists();
+
+        try {
+            // use FileWriter constructor that specifies open for appending
+            CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
+
+            // if the file didn't already exist then we need to write out the header line
+            if (!alreadyExists)
+            {
+                csvOutput.write("id");
+                csvOutput.write("name");
+                csvOutput.endRecord();
+            }
+            // else assume that the file already has the correct header line
+
+            csvOutput.write("2");
+            csvOutput.write("John");
+            csvOutput.endRecord();
+
+            csvOutput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Perform clearing action.
+     * Perform clear on KnowledgeManager, ImagePanel, and KeyBindingPanel.
      */
     private void doClear() {
-        System.out.println("DO CLEAR");
-        knowledgeManager.clearAnnotations();
+        annotationManager.clearAnnotations();
         imagePanel.reset();
         keyBindingPanel.removeAll();
         keyBindingPanel.initPanel();
