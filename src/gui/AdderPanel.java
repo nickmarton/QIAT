@@ -5,8 +5,8 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -21,6 +21,9 @@ public class AdderPanel extends JPanel {
      * The label to bind to the key.
      */
     private JTextField labelField;
+
+    private boolean textFieldLock1 = true;
+    private boolean textFieldLock2 = true;
 
     /**
      * The KeyBindingPanel object to which to add to.
@@ -49,11 +52,13 @@ public class AdderPanel extends JPanel {
         keyLabel.setPreferredSize(new Dimension(100, 25));
         keyField = new JTextField();
         keyField.setPreferredSize(new Dimension(200, 25));
+        addFocusListener(keyField);
 
         JLabel labelLabel = new JLabel("label to add:");
         labelLabel.setPreferredSize(new Dimension(100, 25));
         labelField = new JTextField();
         labelField.setPreferredSize(new Dimension(200, 25));
+        addFocusListener(labelField);
 
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -119,4 +124,26 @@ public class AdderPanel extends JPanel {
             labelField.setText("");
         }
     }
+
+    /**
+     * Add a FocusListener to the textfield so keybindings don't respond while
+     * textField has focus.
+     *
+     * @param textField The JTextField to add the listener to.
+     */
+    private void addFocusListener(JTextField textField) {
+        textField.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                keyBindingPanel.setRespondToKeyBindings(false);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                keyBindingPanel.setRespondToKeyBindings(true);
+            }
+        });
+    }
+
 }

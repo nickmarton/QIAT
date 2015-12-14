@@ -100,6 +100,11 @@ public class ImagePanel extends JPanel{
         return image;
     }
 
+    /**
+     * Return the path of the current image.
+     *
+     * @return imagePath.
+     */
     public String getImagePath() {return imagePath;}
 
     /**
@@ -125,6 +130,9 @@ public class ImagePanel extends JPanel{
                 new BufferedImage(width, height, image.getType()));
     }
 
+    /**
+     * Move the ImagePanel object the next image.
+     */
     public void nextImage() {
         int height = dimension.height;
         int width = dimension.width;
@@ -145,8 +153,39 @@ public class ImagePanel extends JPanel{
             } catch (IOException ex) {
                 fileIndex++;
             } catch (IndexOutOfBoundsException ex) {
-                System.out.println("No images found.");
-                throw ex;
+                JOptionPane.showMessageDialog(null, "No more images found.");
+                fileIndex--;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Move the ImagePanel object the next image.
+     */
+    public void prevImage() {
+        int height = dimension.height;
+        int width = dimension.width;
+
+        ArrayList<String> filePaths = grabber.getFileNames();
+
+        fileIndex--;
+
+        //keep trying to read a file until a readable one is found initially.
+        while (true) {
+            try {
+                String filePath = filePaths.get(fileIndex);
+                imagePath = filePath;
+                image = readImage(filePath);
+                image = getScaledImage(image, height, width);
+                repaint();
+                break;
+            } catch (IOException ex) {
+                fileIndex--;
+            } catch (IndexOutOfBoundsException ex) {
+                JOptionPane.showMessageDialog(null, "At first image; cannot go backwards.");
+                fileIndex++;
+                break;
             }
         }
     }
@@ -182,4 +221,5 @@ public class ImagePanel extends JPanel{
             return ImageIO.read(new File(filePath));
         }
     }
+
 }

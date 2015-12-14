@@ -32,9 +32,14 @@ public class KeyBindingPanel extends JPanel{
     private int rowIndex = 0;
 
     /**
-     *
+     * The ImagePanel to which this KeyBindingPanel corresponds to.
      */
     private ImagePanel imagePanel;
+
+    /**
+     * Should the keybindings respond to the keys being pressed.
+     */
+    private boolean respondToKeyBindings = false;
 
     /**
      * Construct a KeyBindingPanel object.
@@ -81,6 +86,7 @@ public class KeyBindingPanel extends JPanel{
         }
 
         initKeyCodes();
+        bindArrowKeys();
     }
 
     /**
@@ -128,8 +134,28 @@ public class KeyBindingPanel extends JPanel{
         getActionMap().put(key, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String imagePath = imagePanel.getImagePath();
-                imagePanel.nextImage();
+                if (respondToKeyBindings) {
+                    String imagePath = imagePanel.getImagePath();
+                    imagePanel.nextImage();
+                }
+            }
+        });
+    }
+
+    public void setRespondToKeyBindings(boolean respond) {
+        respondToKeyBindings = respond;
+    }
+
+    /**
+     *
+     */
+    private void bindArrowKeys() {
+
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "LeftArrow");
+        getActionMap().put("LeftArrow", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                imagePanel.prevImage();
             }
         });
     }
