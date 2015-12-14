@@ -67,6 +67,9 @@ public class ImageFileGrabber extends FileGrabber {
         ImageFileGrabber ifg;
         ifg = new ImageFileGrabber("TestImages");
         ArrayList<String> files = ifg.getFileNames();
-        System.out.println(files.get(0));
+
+        for (String filePath : files) {
+            System.out.println(filePath);
+        }
     }
 }

@@ -66,7 +66,7 @@ public class Display extends JFrame{
      */
     public final void initUI() {
 
-        setJMenuBar(makeMenuBar());
+        //setJMenuBar(makeMenuBar());
 
         knowledgeManager = new KnowledgeManager();
 

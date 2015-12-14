@@ -7,10 +7,16 @@ package fileHandler;
 import java.io.File;
 import java.util.ArrayList;
 import java.io.FileFilter;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sun.istack.internal.NotNull;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 /**
  * A class designed to scan a directory and extract files within it.
@@ -94,27 +100,21 @@ public abstract class FileGrabber {
     public ArrayList<String> getFileNames(){
         ArrayList<String> filenames = new ArrayList<>();
 
-        //Filter by regex if user provided one
-        FileFilter filter;
+        File directory = new File(this.directory);
+        List<File> files;
         if (this.regex != null) {
-            filter = new RegexFileFilter(this.regex);
+            files = (List<File>) FileUtils.listFiles(
+                    directory,
+                    new RegexFileFilter(this.regex),
+                    TrueFileFilter.INSTANCE);
         }
         else {
-            filter = null;
+            files = (List<File>) FileUtils.listFiles(
+                    directory,
+                    null,
+                    TrueFileFilter.INSTANCE);
         }
-
-        /*
-         * append to list whenever such a file is found
-         * recursively scan given directory for image files;
-         */
-        File directory = new File(this.directory);
-        File[] listOfFiles = directory.listFiles(filter);
-
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                filenames.add(file.getAbsoluteFile().toString());
-            }
-        }
+        filenames.addAll(files.stream().map(file -> file.getAbsoluteFile().toString()).collect(Collectors.toList()));
 
         return filenames;
     }

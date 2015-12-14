@@ -84,7 +84,7 @@ public class StatPanel extends JPanel {
 
         JPanel savePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        JButton saveButton = new JButton(" SAVE ");
+        JButton saveButton = new JButton("   SAVE   ");
         saveButton.addActionListener(e -> {
             doSave();
         });
@@ -109,7 +109,7 @@ public class StatPanel extends JPanel {
 
         JPanel clearPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        JButton clearButton = new JButton("CLEAR");
+        JButton clearButton = new JButton("  CLEAR  ");
         clearButton.addActionListener(e -> {
             doClear();
         });
