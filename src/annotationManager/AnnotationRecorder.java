@@ -4,8 +4,15 @@
 
 package annotationManager;
 
+import com.csvreader.CsvWriter;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A class for saving annotations and read errors for image paths.
@@ -28,9 +35,83 @@ public class AnnotationRecorder {
      * @param annotations   The annotations to record.
      * @param readErrors    The read errors to record.
      */
-    public AnnotationRecorder(HashMap<String,HashSet<String>> annotations,
+    public AnnotationRecorder(HashMap<String, HashSet<String>> annotations,
                               HashMap<String, Boolean> readErrors) {
-
+        this.annotations = annotations;
+        this.readErrors = readErrors;
     }
 
+    /**
+     * Save annotations to a csv file.
+     *
+     * @param outputFile    The filename to write annotations to.
+     */
+    public void saveToCsv(String outputFile) {
+
+        // before we open the file check to see if it already exists
+        boolean alreadyExists = new File(outputFile).exists();
+
+        if (!alreadyExists) {
+            writeToCsv(outputFile);
+        } else {
+            appendToCsv(outputFile);
+        }
+    }
+
+    /**
+     * Generate the union of image file paths in annotations and read errors.
+     *
+     * @return Set of all image paths.
+     */
+    private HashSet<String> generateAllPaths() {
+        HashSet<String> imagePaths = new HashSet<>();
+
+        for (Map.Entry<String, HashSet<String>> entry : annotations.entrySet()) {
+            imagePaths.add(entry.getKey());
+        }
+
+        imagePaths.addAll(readErrors.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList()));
+
+        return imagePaths;
+    }
+
+    /**
+     * Write a new file for the annotations.
+     *
+     * @param outputFile    The name of the file to write output to.
+     */
+    private void writeToCsv(String outputFile) {
+        try {
+            // use FileWriter constructor that specifies open for appending
+            CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, false), ',');
+
+            // if the file didn't already exist then we need to write out the header line
+            csvOutput.write("id");
+            csvOutput.write("name");
+            csvOutput.endRecord();
+            // else assume that the file already has the correct header line
+
+            csvOutput.write("2");
+            csvOutput.write("John");
+            csvOutput.endRecord();
+
+            csvOutput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Append to an existing file for the annotations.
+     *
+     * @param outputFile    The name of the file to append output to.
+     */
+    private void appendToCsv(String outputFile) {
+        try {
+            // use FileWriter constructor that specifies open for appending
+            CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
+        } catch (IOException e) {
+
+        }
+    }
 }
