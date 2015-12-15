@@ -123,7 +123,23 @@ public class Display extends JFrame{
      * @return A new ImagePanel object.
      */
     private ImagePanel makeImagePanel() {
-        ImagePanel imagePanel = new ImagePanel(this.imagePanelDimension);
+
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Choose a directory to scan for images.");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+        } else {
+            System.out.println("No Selection ");
+        }
+
+
+        ImagePanel imagePanel = new ImagePanel(this.imagePanelDimension, chooser.getSelectedFile().getAbsolutePath());
         imagePanel.setBackground(new Color(216, 228, 232));
         return imagePanel;
     }

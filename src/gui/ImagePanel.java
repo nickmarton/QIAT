@@ -47,7 +47,7 @@ public class ImagePanel extends JPanel{
     /**
      * The ImageGrabber obejct to use.
      */
-    private final ImageFileGrabber grabber = new ImageFileGrabber("./TestImages");
+    private final ImageFileGrabber grabber;
 
     /**
      * A set of file extensions to be read using jpeg codec.
@@ -66,13 +66,14 @@ public class ImagePanel extends JPanel{
      *
      * @param imagePanelDimension The total dimension available to the panel.
      */
-    public ImagePanel(Dimension imagePanelDimension){
+    public ImagePanel(Dimension imagePanelDimension, String directory){
 
         this.dimension = imagePanelDimension;
 
         int height = imagePanelDimension.height;
         int width = imagePanelDimension.width;
 
+        grabber = new ImageFileGrabber(directory);
         ArrayList<String> filePaths = grabber.getFileNames();
 
         //keep trying to read a file until a readable one is found initially.
