@@ -194,6 +194,9 @@ public class ImagePanel extends JPanel{
         }
     }
 
+    /**
+     * Reset ImagePanel back to starting image.
+     */
     public void reset() {
 
         //Drop errors first since we're starting over again.

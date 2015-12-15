@@ -81,19 +81,34 @@ public class AnnotationRecorder {
      * @param outputFile    The name of the file to write output to.
      */
     private void writeToCsv(String outputFile) {
+
+        HashSet<String> allPaths = generateAllPaths();
+
         try {
             // use FileWriter constructor that specifies open for appending
             CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, false), ',');
 
-            // if the file didn't already exist then we need to write out the header line
-            csvOutput.write("id");
-            csvOutput.write("name");
-            csvOutput.endRecord();
-            // else assume that the file already has the correct header line
+            for (String path : allPaths) {
 
-            csvOutput.write("2");
-            csvOutput.write("John");
-            csvOutput.endRecord();
+                HashSet<String> labels = new HashSet<>();
+
+                if (annotations.get(path) != null) {
+                    labels.addAll(annotations.get(path));
+                }
+
+                if (readErrors.get(path) == true) {
+                    labels.add("ERROR");
+                }
+
+                //if we have any information about a given path, write it.
+                if (!labels.isEmpty()) {
+                    csvOutput.write(path);
+                    for (String label : labels) {
+                        csvOutput.write(label);
+                    }
+                    csvOutput.endRecord();
+                }
+            }
 
             csvOutput.close();
         } catch (IOException e) {
@@ -107,6 +122,9 @@ public class AnnotationRecorder {
      * @param outputFile    The name of the file to append output to.
      */
     private void appendToCsv(String outputFile) {
+
+        HashSet<String> allPaths = generateAllPaths();
+
         try {
             // use FileWriter constructor that specifies open for appending
             CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');

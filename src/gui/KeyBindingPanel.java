@@ -168,7 +168,7 @@ public class KeyBindingPanel extends JPanel{
                         annotationManager.addAnnotation(imagePath, label);
 
                         if (!annotationManager.isVariableLength()) {
-                            System.out.println(annotationManager.getAnnotations().get(imagePath));
+                            //System.out.println(annotationManager.getAnnotations().get(imagePath));
                             imagePanel.nextImage();
                         }
                     }
@@ -212,7 +212,7 @@ public class KeyBindingPanel extends JPanel{
         getActionMap().put("RightArrow", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                System.out.println(annotationManager.getAnnotations().get(imagePanel.getImagePath()));
+                //System.out.println(annotationManager.getAnnotations().get(imagePanel.getImagePath()));
                 imagePanel.nextImage();
             }
         });

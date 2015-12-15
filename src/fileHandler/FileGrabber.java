@@ -105,15 +105,17 @@ public abstract class FileGrabber {
         if (this.regex != null) {
             files = (List<File>) FileUtils.listFiles(
                     directory,
-                    new RegexFileFilter(this.regex),
+                    //new RegexFileFilter(this.regex),
+                    new RegexFileFilter(".*"),
                     TrueFileFilter.INSTANCE);
         }
         else {
             files = (List<File>) FileUtils.listFiles(
                     directory,
-                    null,
+                    new RegexFileFilter(".*"),
                     TrueFileFilter.INSTANCE);
         }
+
         filenames.addAll(files.stream().map(file -> file.getAbsoluteFile().toString()).collect(Collectors.toList()));
 
         return filenames;
@@ -153,7 +155,7 @@ public abstract class FileGrabber {
         StringBuilder regex = new StringBuilder();
 
         regex.append("(");
-        String generalName = "[a-zA-Z0-9_]*.";
+        String generalName = "[a-zA-Z0-9_]*";
         for (String extension : fileExtensions) {
             regex.append(generalName);
             regex.append(extension);
