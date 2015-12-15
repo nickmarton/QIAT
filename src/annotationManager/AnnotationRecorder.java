@@ -129,7 +129,7 @@ public class AnnotationRecorder {
             // use FileWriter constructor that specifies open for appending
             CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
     }
 }

@@ -45,7 +45,7 @@ public class StatPanel extends JPanel {
     /**
      * Construct a StatPanel object.
      *
-     * @param statPanelDimension    The space allotted to the Panel.
+     * @param statPanelDimension The space allotted to the Panel.
      */
     public StatPanel(Dimension statPanelDimension,
                      AnnotationManager knowledgeManager,
@@ -72,7 +72,7 @@ public class StatPanel extends JPanel {
     /**
      * Add the multi-label checkbox.
      *
-     * @param constraints   The GridBagLAyout constraints to use.
+     * @param constraints The GridBagLAyout constraints to use.
      */
     private void addMultiLabelCheckBox(GridBagConstraints constraints, int row) {
         constraints.gridx = 0;
@@ -94,8 +94,8 @@ public class StatPanel extends JPanel {
     /**
      * Add the save button.
      *
-     * @param constraints   The GridBagLayout constraints to use.
-     * @param row           The row to place the save button on.
+     * @param constraints The GridBagLayout constraints to use.
+     * @param row         The row to place the save button on.
      */
     private void addSaveButton(GridBagConstraints constraints, int row) {
         constraints.gridx = 0;
@@ -119,8 +119,8 @@ public class StatPanel extends JPanel {
     /**
      * Add the clear button.
      *
-     * @param constraints   The GridBagLayout constraints to use.
-     * @param row           The row to place the save button on.
+     * @param constraints The GridBagLayout constraints to use.
+     * @param row         The row to place the save button on.
      */
     private void addClearButton(GridBagConstraints constraints, int row) {
         constraints.gridx = 0;
@@ -145,7 +145,7 @@ public class StatPanel extends JPanel {
      * Add multi-label checkbox, save, and clear button, then pad the
      * remainder of the column.
      *
-     * @param constraints   The GridBagLayout constraints to use.
+     * @param constraints The GridBagLayout constraints to use.
      */
     private void addSettingsColumn(GridBagConstraints constraints) {
         addMultiLabelCheckBox(constraints, 0);
@@ -156,7 +156,7 @@ public class StatPanel extends JPanel {
         constraints.gridy = 3;
         constraints.weightx = 1;
         constraints.weighty = 1;
-        add(Box.createRigidArea(new Dimension(0,50)), constraints);
+        add(Box.createRigidArea(new Dimension(0, 50)), constraints);
     }
 
     /**
@@ -165,10 +165,26 @@ public class StatPanel extends JPanel {
     private void doSave() {
 
         AnnotationRecorder recorder = new AnnotationRecorder(
-                                        annotationManager.getAnnotations(),
-                                        imagePanel.getReadErrors());
+                annotationManager.getAnnotations(),
+                imagePanel.getReadErrors());
 
-        recorder.saveToCsv("Annotations.csv");
+        JFileChooser saveFile = new JFileChooser();
+        saveFile.showSaveDialog(null);
+
+        //Wait until a valid CSV filename is chosen before saving.
+        while (true) {
+            if (isValidFileName(saveFile)) {
+                recorder.saveToCsv(saveFile.getSelectedFile().getAbsolutePath());
+                break;
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid csv file");
+                saveFile = new JFileChooser();
+                saveFile.showSaveDialog(null);
+                if (saveFile == null) {
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -181,5 +197,22 @@ public class StatPanel extends JPanel {
         keyBindingPanel.initPanel();
         keyBindingPanel.clearRegisteredBindings();
         keyBindingPanel.revalidate();
+    }
+
+    /**
+     * Determine if a file name is a valid csv file.
+     * @param chosenfile    The fileChooser object to check.
+     * @return              The boolean for whether or not valid csv.
+     */
+    private boolean isValidFileName(JFileChooser chosenfile) {
+        String chosenFileName = chosenfile.getSelectedFile().getName();
+        String chosenFilePath = chosenfile.getSelectedFile().getAbsolutePath();
+        String extension = chosenFilePath.substring(chosenFilePath.length()-4);
+
+        if (extension.equals(".csv") && chosenFileName.length() > 4) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
