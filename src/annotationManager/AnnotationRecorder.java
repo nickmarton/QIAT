@@ -6,9 +6,7 @@ package annotationManager;
 
 import com.csvreader.CsvWriter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -123,11 +121,68 @@ public class AnnotationRecorder {
      */
     private void appendToCsv(String outputFile) {
 
+        HashMap<String, HashSet<String>> previousAnnotations = new HashMap<>();
+
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(outputFile));
+
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                String[] annotation = line.trim().split(",");
+                String imagePath = annotation[0];
+                for(int i=1; i <annotation.length; i++) {
+
+                    if (previousAnnotations.get(imagePath) == null) {
+                        HashSet<String> emptyLabels = new HashSet();
+                        previousAnnotations.put(imagePath, emptyLabels);
+                    }
+                    previousAnnotations.get(imagePath).add(annotation[i]);
+
+                }
+                // if you want to check either it contains some name
+                //index 0 is first name, index 1 is last name, index 2 is ID
+            }
+        } catch (IOException ex) {
+            writeToCsv(outputFile);
+            return;
+        }
+
         HashSet<String> allPaths = generateAllPaths();
 
         try {
             // use FileWriter constructor that specifies open for appending
-            CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, true), ',');
+            CsvWriter csvOutput = new CsvWriter(new FileWriter(outputFile, false), ',');
+
+            for (String path : allPaths) {
+
+                HashSet<String> labels;
+
+                if (previousAnnotations.get(path) != null) {
+                    labels = previousAnnotations.get(path);
+                } else {
+                    labels = new HashSet<>();
+                }
+
+                if (annotations.get(path) != null) {
+                    labels.addAll(annotations.get(path));
+                }
+
+                if (readErrors.get(path) == true) {
+                    labels.add("ERROR");
+                }
+
+                //if we have any information about a given path, write it.
+                if (!labels.isEmpty()) {
+                    csvOutput.write(path);
+                    for (String label : labels) {
+                        csvOutput.write(label);
+                    }
+                    csvOutput.endRecord();
+                    System.out.println(labels);
+                }
+            }
+            csvOutput.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

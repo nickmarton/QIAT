@@ -173,16 +173,22 @@ public class StatPanel extends JPanel {
 
         //Wait until a valid CSV filename is chosen before saving.
         while (true) {
-            if (isValidFileName(saveFile)) {
-                recorder.saveToCsv(saveFile.getSelectedFile().getAbsolutePath());
-                break;
-            } else {
-                JOptionPane.showMessageDialog(null, "Invalid csv file");
-                saveFile = new JFileChooser();
-                saveFile.showSaveDialog(null);
-                if (saveFile == null) {
+            try {
+                if (isValidFileName(saveFile)) {
+                    recorder.saveToCsv(saveFile.getSelectedFile().getAbsolutePath());
                     break;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid csv file");
+                    saveFile = new JFileChooser();
+                    saveFile.showSaveDialog(null);
+                    if (saveFile == null) {
+                        break;
+                    }
                 }
+            }
+            //if user cancels without ever trying a file.
+            catch (NullPointerException ex) {
+                break;
             }
         }
     }
@@ -205,9 +211,10 @@ public class StatPanel extends JPanel {
      * @return              The boolean for whether or not valid csv.
      */
     private boolean isValidFileName(JFileChooser chosenfile) {
+
         String chosenFileName = chosenfile.getSelectedFile().getName();
         String chosenFilePath = chosenfile.getSelectedFile().getAbsolutePath();
-        String extension = chosenFilePath.substring(chosenFilePath.length()-4);
+        String extension = chosenFilePath.substring(chosenFilePath.length() - 4);
 
         if (extension.equals(".csv") && chosenFileName.length() > 4) {
             return true;
