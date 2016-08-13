@@ -81,7 +81,7 @@ public class Display extends JFrame{
         add(statScroll, BorderLayout.SOUTH);
 
         setSize(this.frameDimension);
-        setTitle("Quick Annotation Tool");
+        setTitle("Quick Image Annotation Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
     }
